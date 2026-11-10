@@ -1,0 +1,1 @@
+ALTER TABLE "entries" ADD CONSTRAINT "entries_url_unique" UNIQUE("url");

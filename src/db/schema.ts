@@ -8,7 +8,8 @@ export const entries = pgTable("entries", {
     title: text("title")
         .notNull(),
     url: text("url")
-        .notNull(),
+        .notNull()
+        .unique(),
     description: text("description")
         .notNull()
         .default(""),
