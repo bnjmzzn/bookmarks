@@ -6,7 +6,12 @@ import { listEntries } from "@/lib/server/service";
 export async function GET() {
     try {
         const entries = await listEntries();
-        return jsendSuccess(entries);
+        const response = jsendSuccess(entries);
+        response.headers.set(
+            "Cache-Control",
+            "public, s-maxage=60, stale-while-revalidate=600",
+        );
+        return response;
     } catch (error) {
         return handleError(error);
     }
