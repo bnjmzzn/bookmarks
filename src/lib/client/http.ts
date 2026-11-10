@@ -1,7 +1,19 @@
 // src/lib/client/http.ts
-import axios, { type AxiosResponse } from "axios";
+import axios, { type AxiosRequestConfig } from "axios";
 import type { JSendResponse } from "@/lib/jsend";
-import { ClientError } from "@/lib/client/types";
+import { ClientError } from "@/lib/client/errors";
+
+type Scope = "public" | "admin";
+
+const baseUrls: Record<Scope, string> = {
+    public: "/api",
+    admin: "/api/admin",
+};
+
+const instance = axios.create({
+    timeout: 10000,
+    validateStatus: () => true,
+});
 
 let unauthorizedHandler: (() => void) | null = null;
 
@@ -18,73 +30,49 @@ function isJSendBody(value: unknown): value is JSendResponse<unknown> {
     return status === "success" || status === "fail" || status === "error";
 }
 
-function unwrapResponse(response: AxiosResponse) {
-    const body: unknown = response.data;
-
-    if (isJSendBody(body) && body.status === "success") {
-        response.data = body.data;
-        return response;
+function parseBody<Data>(status: number, body: unknown): Data {
+    if (!isJSendBody(body)) {
+        throw new ClientError(status, "Request failed", null);
     }
 
-    throw new ClientError(response.status, "Unexpected response", null);
+    if (body.status === "error") {
+        throw new ClientError(status, body.message, null);
+    }
+
+    if (body.status === "fail") {
+        const hasMessage = typeof body.data.message === "string";
+        const message = hasMessage ? String(body.data.message) : "Request failed";
+        throw new ClientError(status, message, body.data);
+    }
+
+    const isOk = status >= 200 && status < 300;
+
+    if (!isOk) {
+        throw new ClientError(status, "Request failed", null);
+    }
+
+    return body.data as Data;
 }
 
-function toClientError(error: unknown) {
-    if (axios.isCancel(error)) {
-        return error;
+async function send(scope: Scope, config: AxiosRequestConfig) {
+    try {
+        return await instance.request({ ...config, baseURL: baseUrls[scope] });
+    } catch (error) {
+        if (axios.isCancel(error)) {
+            throw error;
+        }
+
+        throw new ClientError(0, "Network error", null);
     }
-
-    if (!axios.isAxiosError(error)) {
-        return error;
-    }
-
-    if (!error.response) {
-        return new ClientError(0, "Network error", null);
-    }
-
-    const { status, data } = error.response;
-
-    if (!isJSendBody(data)) {
-        return new ClientError(status, "Request failed", null);
-    }
-
-    if (data.status === "error") {
-        return new ClientError(status, data.message, null);
-    }
-
-    if (data.status === "fail") {
-        const hasMessage = typeof data.data.message === "string";
-        const message = hasMessage ? String(data.data.message) : "Request failed";
-        return new ClientError(status, message, data.data);
-    }
-
-    return new ClientError(status, "Request failed", null);
 }
 
-function handlePublicError(error: unknown) {
-    return Promise.reject(toClientError(error));
-}
-
-function handleAdminError(error: unknown) {
-    const clientError = toClientError(error);
-    const isUnauthorized = clientError instanceof ClientError && clientError.status === 401;
+export async function request<Data>(scope: Scope, config: AxiosRequestConfig) {
+    const response = await send(scope, config);
+    const isUnauthorized = scope === "admin" && response.status === 401;
 
     if (isUnauthorized) {
         unauthorizedHandler?.();
     }
 
-    return Promise.reject(clientError);
+    return parseBody<Data>(response.status, response.data);
 }
-
-export const publicHttp = axios.create({
-    baseURL: "/api",
-    timeout: 10000,
-});
-
-export const adminHttp = axios.create({
-    baseURL: "/api/admin",
-    timeout: 10000,
-});
-
-publicHttp.interceptors.response.use(unwrapResponse, handlePublicError);
-adminHttp.interceptors.response.use(unwrapResponse, handleAdminError);

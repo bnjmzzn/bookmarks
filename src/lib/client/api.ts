@@ -1,23 +1,21 @@
 // src/lib/client/api.ts
-import { adminHttp, publicHttp } from "@/lib/client/http";
+import { request } from "@/lib/client/http";
 import type { Entry } from "@/lib/client/types";
 import type { EntryCreate, EntryDelete, EntryUpdate } from "@/lib/validation";
 
-export async function getEntries(signal?: AbortSignal) {
-    const response = await publicHttp.get<Entry[]>("/entries", { signal });
-    return response.data;
-}
-
-export async function createEntry(input: EntryCreate) {
-    const response = await adminHttp.post<Entry>("/entries", input);
-    return response.data;
-}
-
-export async function updateEntry(input: EntryUpdate) {
-    const response = await adminHttp.patch<Entry>("/entries", input);
-    return response.data;
-}
-
-export async function deleteEntry(input: EntryDelete) {
-    await adminHttp.delete<null>("/entries", { data: input });
-}
+export const api = {
+    entries: {
+        list(signal?: AbortSignal) {
+            return request<Entry[]>("public", { method: "get", url: "/entries", signal });
+        },
+        create(input: EntryCreate) {
+            return request<Entry>("admin", { method: "post", url: "/entries", data: input });
+        },
+        update(input: EntryUpdate) {
+            return request<Entry>("admin", { method: "patch", url: "/entries", data: input });
+        },
+        remove(input: EntryDelete) {
+            return request<null>("admin", { method: "delete", url: "/entries", data: input });
+        },
+    },
+};

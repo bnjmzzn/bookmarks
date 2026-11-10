@@ -6,15 +6,3 @@ export type Serialized<Value> = {
 };
 
 export type Entry = Serialized<EntryRow>;
-
-export class ClientError extends Error {
-    status: number;
-    issues: Record<string, unknown> | null;
-
-    constructor(status: number, message: string, issues: Record<string, unknown> | null) {
-        super(message);
-        this.name = "ClientError";
-        this.status = status;
-        this.issues = issues;
-    }
-}
