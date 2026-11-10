@@ -1,7 +1,7 @@
 // db/schema.ts
 import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core";
 
-export const links = pgTable("entries", {
+export const entries = pgTable("entries", {
     id: uuid("id")
         .primaryKey()
         .defaultRandom(),
