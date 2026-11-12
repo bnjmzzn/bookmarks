@@ -1,13 +1,14 @@
 // src/components/entries/EntryCard.tsx
 "use client";
 
-import { useState } from "react";
-import { Box, Card, Group, Image, Stack, Text, UnstyledButton } from "@mantine/core";
+import { useEffect, useRef, useState } from "react";
+import { Box, Card, Group, Image, Loader, Stack, Text, UnstyledButton } from "@mantine/core";
 import { useHover, useMediaQuery, useReducedMotion } from "@mantine/hooks";
 import { IconWorld } from "@tabler/icons-react";
 import { TagBadge, TagOverflowBadge } from "@/components/common/TagBadge";
 import { getEntrySummary, getFaviconUrl, getHostname, sortTags } from "@/lib/client/utils";
 import type { Entry } from "@/lib/client/types";
+
 
 type EntryCardProps = {
     entry: Entry;
@@ -21,6 +22,7 @@ const TILE_SIZE = 88;
 const ICON_SIZE = 56;
 const HOVER_TRANSITION = "transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease";
 const PRESS_TRANSITION = "transform 80ms ease";
+const ICON_TRANSITION = "transform 200ms ease, opacity 200ms ease";
 
 export function EntryCard({ entry, onOpen }: EntryCardProps) {
     const { hovered, ref } = useHover<HTMLButtonElement>();
@@ -69,6 +71,27 @@ export function EntryCard({ entry, onOpen }: EntryCardProps) {
         setHasIconError(true);
     };
 
+    // loader for favicons
+    const imageRef = useRef<HTMLImageElement>(null);
+    const [isIconLoaded, setIsIconLoaded] = useState(false);
+
+    useEffect(() => {
+        const image = imageRef.current;
+        if (!image) {
+            return;
+        }
+        const isAlreadyLoaded = image.complete && image.naturalWidth > 0;
+        if (isAlreadyLoaded) {
+            setIsIconLoaded(true);
+        }
+    }, []);
+
+    const handleIconLoad = () => {
+        setIsIconLoaded(true);
+    };
+
+    const isIconLoading = !isIconLoaded && !hasIconError;
+
     return (
         <UnstyledButton
             ref={ref}
@@ -89,37 +112,42 @@ export function EntryCard({ entry, onOpen }: EntryCardProps) {
                 style={{ transform: cardTransform, borderColor, boxShadow, transition }}
             >
                 <Group wrap="nowrap" align="center" gap="md">
-                    <Box
-                        w={TILE_SIZE}
-                        h={TILE_SIZE}
-                        style={{
-                            flexShrink: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            overflow: "hidden",
-                            borderRadius: "var(--mantine-radius-md)",
-                            background: "var(--mantine-color-default-hover)",
-                            border: "1px solid var(--mantine-color-default-border)",
-                        }}
-                    >
-                        {hasIconError ? (
-                            <IconWorld size={32} stroke={1.5} />
-                        ) : (
-                            <Image
-                                src={getFaviconUrl(hostname)}
-                                alt=""
-                                w={ICON_SIZE}
-                                h={ICON_SIZE}
-                                fit="contain"
-                                onError={handleIconError}
-                                style={{
-                                    transform: iconTransform,
-                                    transition: HOVER_TRANSITION,
-                                }}
-                            />
-                        )}
-                    </Box>
+                <Box
+                    w={TILE_SIZE}
+                    h={TILE_SIZE}
+                    style={{
+                        position: "relative",
+                        flexShrink: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        overflow: "hidden",
+                        borderRadius: "var(--mantine-radius-md)",
+                        background: "var(--mantine-color-default-hover)",
+                        border: "1px solid var(--mantine-color-default-border)",
+                    }}
+                >
+                    {isIconLoading && <Loader size={40} style={{ position: "absolute" }} />}
+                    {hasIconError ? (
+                        <IconWorld size={32} stroke={1.5} />
+                    ) : (
+                        <Image
+                            ref={imageRef}
+                            src={getFaviconUrl(hostname)}
+                            alt=""
+                            w={ICON_SIZE}
+                            h={ICON_SIZE}
+                            fit="contain"
+                            onLoad={handleIconLoad}
+                            onError={handleIconError}
+                            style={{
+                                opacity: isIconLoaded ? 1 : 0,
+                                transform: iconTransform,
+                                transition: ICON_TRANSITION,
+                            }}
+                        />
+                    )}
+                </Box>
                     <Stack gap={6} miw={0} style={{ flex: 1 }}>
                         <Text fw={600} lineClamp={1} mih="1.55em">
                             {entry.title}
