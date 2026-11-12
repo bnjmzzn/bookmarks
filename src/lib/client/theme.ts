@@ -2,5 +2,5 @@
 import { createTheme } from "@mantine/core";
 
 export const theme = createTheme({
-    primaryColor: "white", // TODO: ui
+    primaryColor: "gray", // TODO: ui
 });
