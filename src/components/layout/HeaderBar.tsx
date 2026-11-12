@@ -4,15 +4,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+    ActionIcon,
     Anchor,
+    Box,
     Breadcrumbs,
     Burger,
-    Button,
     Group,
     Text,
-    useComputedColorScheme,
     useMantineColorScheme,
 } from "@mantine/core";
+import { IconChevronRight, IconMoon, IconSun } from "@tabler/icons-react";
 import { useEntriesContext } from "@/lib/client/EntriesContext";
 import { useEntryFilters } from "@/lib/client/hooks/useEntryFilters";
 
@@ -30,10 +31,7 @@ export function HeaderBar({ opened, onToggle }: HeaderBarProps) {
     const pathname = usePathname();
     const { entries } = useEntriesContext();
     const { entryId } = useEntryFilters();
-    const { setColorScheme } = useMantineColorScheme();
-    const computedColorScheme = useComputedColorScheme("light", {
-        getInitialValueInEffect: true,
-    });
+    const { toggleColorScheme } = useMantineColorScheme();
 
     const selectedEntry = entries.find((entry) => {
         return entry.id === entryId;
@@ -53,36 +51,54 @@ export function HeaderBar({ opened, onToggle }: HeaderBarProps) {
         crumbs[0] = { label: "Home", href: null };
     }
 
-    const handleToggleTheme = () => {
-        const nextScheme = computedColorScheme === "light" ? "dark" : "light";
-        setColorScheme(nextScheme);
-    };
-
     return (
         <Group h="100%" px="md" justify="space-between" wrap="nowrap">
-            <Group wrap="nowrap">
-                <Burger opened={opened} onClick={onToggle} hiddenFrom="sm" size="sm" />
-                <Breadcrumbs>
+            <Group wrap="nowrap" gap="md">
+                <Burger opened={opened} onClick={onToggle} hiddenFrom="sm" size="md" />
+                <Breadcrumbs
+                    separator={<IconChevronRight size={16} stroke={1.5} />}
+                    separatorMargin="xs"
+                >
                     {crumbs.map((crumb) => {
                         if (crumb.href === null) {
                             return (
-                                <Text key={crumb.label} size="sm" lineClamp={1}>
+                                <Text key={crumb.label} size="lg" fw={600} lineClamp={1}>
                                     {crumb.label}
                                 </Text>
                             );
                         }
 
                         return (
-                            <Anchor key={crumb.label} component={Link} href={crumb.href} size="sm">
+                            <Anchor
+                                key={crumb.label}
+                                component={Link}
+                                href={crumb.href}
+                                size="lg"
+                                fw={500}
+                                c="dimmed"
+                                underline="never"
+                            >
                                 {crumb.label}
                             </Anchor>
                         );
                     })}
                 </Breadcrumbs>
             </Group>
-            <Button variant="default" size="xs" onClick={handleToggleTheme}>
-                Toggle theme
-            </Button>
+            <ActionIcon
+                variant="subtle"
+                color="gray"
+                size="lg"
+                radius="md"
+                onClick={toggleColorScheme}
+                aria-label="Toggle color scheme"
+            >
+                <Box component="span" lightHidden>
+                    <IconSun size={22} stroke={1.5} />
+                </Box>
+                <Box component="span" darkHidden>
+                    <IconMoon size={22} stroke={1.5} />
+                </Box>
+            </ActionIcon>
         </Group>
     );
 }
