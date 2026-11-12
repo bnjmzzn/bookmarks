@@ -67,3 +67,32 @@ export function filterEntries(entries: Entry[], filters: EntryFilters) {
         return compareEntries(first, second, filters.sort);
     });
 }
+
+export type TagCount = {
+    tag: string;
+    count: number;
+};
+
+export function getTagCounts(entries: Entry[]) {
+    const counts = new Map<string, number>();
+
+    for (const entry of entries) {
+        for (const tag of entry.tags) {
+            counts.set(tag, (counts.get(tag) ?? 0) + 1);
+        }
+    }
+
+    const result: TagCount[] = [];
+
+    for (const [tag, count] of counts) {
+        result.push({ tag, count });
+    }
+
+    return result.sort((first, second) => {
+        if (first.count !== second.count) {
+            return second.count - first.count;
+        }
+
+        return first.tag.localeCompare(second.tag);
+    });
+}
