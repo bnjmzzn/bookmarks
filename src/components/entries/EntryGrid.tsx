@@ -10,11 +10,12 @@ type EntryGridProps = {
     entries: Entry[];
     isLoading: boolean;
     hasError: boolean;
+    onOpen: (id: string) => void;
 };
 
 const skeletonKeys = ["1", "2", "3", "4", "5", "6"];
 
-export function EntryGrid({ entries, isLoading, hasError }: EntryGridProps) {
+export function EntryGrid({ entries, isLoading, hasError, onOpen }: EntryGridProps) {
     if (hasError) {
         return null; // TODO: add error ui
     }
@@ -32,7 +33,7 @@ export function EntryGrid({ entries, isLoading, hasError }: EntryGridProps) {
     return (
         <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }}>
             {entries.map((entry) => {
-                return <EntryCard key={entry.id} entry={entry} />;
+                return <EntryCard key={entry.id} entry={entry} onOpen={onOpen} />;
             })}
         </SimpleGrid>
     );

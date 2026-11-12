@@ -69,5 +69,23 @@ export function useEntryFilters() {
         router.push("/");
     }
 
-    return { filters, entryId, setQuery, setSort, setTags, selectTag, clearAll };
+    function openEntry(id: string) {
+        router.push(buildUrl({ ...filters, entryId: id }));
+    }
+
+    function closeEntry() {
+        router.push(buildUrl({ ...filters, entryId: null }));
+    }
+
+    return {
+        filters,
+        entryId,
+        setQuery,
+        setSort,
+        setTags,
+        selectTag,
+        clearAll,
+        openEntry,
+        closeEntry,
+    };
 }

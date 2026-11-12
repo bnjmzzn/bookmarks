@@ -6,13 +6,18 @@ import type { Entry } from "@/lib/client/types";
 
 type EntryCardProps = {
     entry: Entry;
+    onOpen: (id: string) => void;
 };
 
-export function EntryCard({ entry }: EntryCardProps) {
+export function EntryCard({ entry, onOpen }: EntryCardProps) {
     const hostname = new URL(entry.url).hostname;
 
+    const handleClick = () => {
+        onOpen(entry.id);
+    };
+
     return (
-        <Card withBorder padding="md" h="100%">
+        <Card withBorder padding="md" h="100%" onClick={handleClick} style={{ cursor: "pointer" }}>
             <Stack gap="xs" h="100%">
                 <Text fw={600} lineClamp={2}>
                     {entry.title}
