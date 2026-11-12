@@ -17,6 +17,7 @@
         "@mantine/hooks": "9.8.0",
         "@mantine/notifications": "9.8.0",
         "@neondatabase/serverless": "1.2.0",
+        "@tabler/icons-react": "3.51.0",
         "axios": "1.21.0",
         "drizzle-orm": "0.45.4",
         "drizzle-zod": "0.8.3",
