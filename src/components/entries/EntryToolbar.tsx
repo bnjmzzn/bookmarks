@@ -8,7 +8,9 @@ import { useDebouncedCallback } from "@mantine/hooks";
 import { useEntriesContext } from "@/lib/client/EntriesContext";
 import { getTagCounts, isSortOption } from "@/lib/client/filterEntries";
 import { useEntryFilters } from "@/lib/client/hooks/useEntryFilters";
+import { IconArrowsSort, IconFilterOff, IconSearch, IconTags } from "@tabler/icons-react";
 
+const SEARCH_MAX_LENGTH = 100;
 const sortData = [
     { value: "newest", label: "Newest" },
     { value: "oldest", label: "Oldest" },
@@ -61,33 +63,66 @@ export function EntryToolbar() {
     };
 
     return (
-        <Group align="flex-end" wrap="wrap">
+        <Group gap="sm" wrap="wrap" align="center">
             <TextInput
-                label="Search"
-                placeholder="Keyword"
+                aria-label="Search"
+                placeholder="Search entries"
                 value={keyword}
                 onChange={handleKeywordChange}
-                style={{ flex: 1, minWidth: 180 }}
+                leftSection={<IconSearch size={18} stroke={2} />}
+                maxLength={SEARCH_MAX_LENGTH}
+                radius="md"
+                size="md"
+                style={{ flex: "2 1 0", minWidth: 220 }}
             />
             <MultiSelect
-                label="Tags"
-                placeholder="Filter by tags"
+                aria-label="Tags"
+                placeholder={hasTags ? "" : "Filter by tags"}
                 data={tagOptions}
                 value={filters.tags}
                 onChange={setTags}
+                leftSection={<IconTags size={18} stroke={2} />}
                 searchable
-                style={{ flex: 1, minWidth: 180 }}
+                clearable
+                hidePickedOptions
+                radius="md"
+                size="md"
+                style={{ flex: "2 1 0", minWidth: 220 }}
+                styles={{
+                    input: {
+                        height: 42,
+                        minHeight: 42,
+                        overflow: "hidden",
+                    },
+                    pillsList: {
+                        flexWrap: "nowrap",
+                        overflowX: "auto",
+                        scrollbarWidth: "none",
+                    },
+                }}
             />
             <Select
-                label="Sort"
+                aria-label="Sort"
                 data={sortData}
                 value={filters.sort}
                 onChange={handleSortChange}
+                leftSection={<IconArrowsSort size={18} stroke={2} />}
                 allowDeselect={false}
-                w={140}
+                radius="md"
+                size="md"
+                style={{ flex: "0 0 160px" }}
             />
-            <Button variant="default" onClick={clearAll} disabled={!hasActiveFilters}>
-                Clear all
+            <Button
+                variant="filled"
+                color="red"
+                size="md"
+                radius="md"
+                onClick={clearAll}
+                disabled={!hasActiveFilters}
+                leftSection={<IconFilterOff size={18} stroke={2} />}
+                style={{ flex: "0 0 auto" }}
+            >
+                Clear
             </Button>
         </Group>
     );
