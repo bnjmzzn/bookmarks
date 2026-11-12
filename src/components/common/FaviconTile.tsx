@@ -10,9 +10,10 @@ type FaviconTileProps = {
     hostname: string;
     size: number;
     iconSize: number;
+    isLifted?: boolean;
 };
 
-export function FaviconTile({ hostname, size, iconSize }: FaviconTileProps) {
+export function FaviconTile({ hostname, size, iconSize, isLifted = false }: FaviconTileProps) {
     const imageRef = useRef<HTMLImageElement>(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [hasError, setHasError] = useState(false);
@@ -35,11 +36,14 @@ export function FaviconTile({ hostname, size, iconSize }: FaviconTileProps) {
                 position: "relative",
                 borderRadius: "var(--mantine-radius-md)",
                 border: "1px solid var(--mantine-color-default-border)",
-                backgroundColor: "var(--mantine-color-default)",
+                backgroundColor: "var(--mantine-color-default-hover)",
+                overflow: "hidden",
             }}
         >
-            {hasError && <IconWorld size={iconSize / 2} stroke={1.5} />}
-            {!hasError && !isLoaded && <Loader size="lg" style={{ position: "absolute" }} />}
+            {hasError && <IconWorld size={Math.round(iconSize * 0.6)} stroke={1.5} />}
+            {!hasError && !isLoaded && (
+                <Loader size={Math.round(size * 0.45)} style={{ position: "absolute" }} />
+            )}
             {!hasError && (
                 <img
                     ref={imageRef}
@@ -51,7 +55,8 @@ export function FaviconTile({ hostname, size, iconSize }: FaviconTileProps) {
                     onError={() => setHasError(true)}
                     style={{
                         opacity: isLoaded ? 1 : 0,
-                        transition: "opacity 200ms ease",
+                        transform: isLifted ? "scale(1.08)" : "none",
+                        transition: "transform 200ms ease, opacity 200ms ease",
                     }}
                 />
             )}
