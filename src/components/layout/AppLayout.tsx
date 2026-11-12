@@ -28,7 +28,9 @@ export function AppLayout({ children }: AppLayoutProps) {
                 padding="md"
             >
                 <AppShell.Header>
-                    <HeaderBar opened={opened} onToggle={toggle} />
+                    <Suspense fallback={null}>
+                        <HeaderBar opened={opened} onToggle={toggle} />
+                    </Suspense>
                 </AppShell.Header>
                 <AppShell.Navbar p="md">
                     <Suspense fallback={null}>
