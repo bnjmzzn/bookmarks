@@ -1,5 +1,5 @@
 // src/lib/client/theme.ts
-import { createTheme, MantineColorsTuple } from "@mantine/core";
+import { createTheme, MantineColorsTuple, NavLink } from "@mantine/core";
 
 const dark: MantineColorsTuple = [
     "#d4d4d4",
@@ -21,4 +21,14 @@ export const theme = createTheme({
     },
     white: "#f4f5f7",
     black: "#1c1e21",
+    components: {
+        NavLink: {
+            styles: {
+                label: {
+                    fontSize: "var(--mantine-font-size-sm)",
+                    fontWeight: 500,
+                },
+            },
+        },
+    },
 });
