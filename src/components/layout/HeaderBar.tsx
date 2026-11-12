@@ -62,7 +62,7 @@ export function HeaderBar({ opened, onToggle }: HeaderBarProps) {
                     {crumbs.map((crumb) => {
                         if (crumb.href === null) {
                             return (
-                                <Text key={crumb.label} size="lg" fw={600} lineClamp={1}>
+                                <Text key={crumb.label} size="lg" fw={600} lh={1.6} lineClamp={1}>
                                     {crumb.label}
                                 </Text>
                             );
@@ -75,6 +75,7 @@ export function HeaderBar({ opened, onToggle }: HeaderBarProps) {
                                 href={crumb.href}
                                 size="lg"
                                 fw={500}
+                                lh={1.6}
                                 c="dimmed"
                                 underline="never"
                             >
