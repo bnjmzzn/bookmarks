@@ -8,6 +8,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { theme } from "@/lib/client/theme";
 
 export const metadata: Metadata = {
+    // TODO: fix metadata
     title: "Bookmarks",
     description: "Bookmarks",
 };

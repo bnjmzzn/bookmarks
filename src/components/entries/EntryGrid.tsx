@@ -16,7 +16,7 @@ const skeletonKeys = ["1", "2", "3", "4", "5", "6"];
 
 export function EntryGrid({ entries, isLoading, hasError }: EntryGridProps) {
     if (hasError) {
-        return null;
+        return null; // TODO: add error ui
     }
 
     if (isLoading) {
