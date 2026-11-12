@@ -2,8 +2,8 @@
 "use client";
 
 import { Box, Card, Group, Skeleton, Stack } from "@mantine/core";
+import { TILE_SIZE } from "./EntryCard";
 
-const TILE_SIZE = 88;
 const TAG_COUNT = 3;
 const tagKeys = Array.from({ length: TAG_COUNT }, (_, index) => {
     return String(index);
