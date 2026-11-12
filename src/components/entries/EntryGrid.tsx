@@ -22,7 +22,7 @@ export function EntryGrid({ entries, isLoading, hasError, onOpen }: EntryGridPro
 
     if (isLoading) {
         return (
-            <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }}>
+            <SimpleGrid cols={{ base: 1, lg: 2, xl: 3 }}>
                 {skeletonKeys.map((key) => {
                     return <EntryCardSkeleton key={key} />;
                 })}
@@ -31,7 +31,7 @@ export function EntryGrid({ entries, isLoading, hasError, onOpen }: EntryGridPro
     }
 
     return (
-        <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }}>
+        <SimpleGrid cols={{ base: 1, lg: 2, xl: 3 }}>
             {entries.map((entry) => {
                 return <EntryCard key={entry.id} entry={entry} onOpen={onOpen} />;
             })}
