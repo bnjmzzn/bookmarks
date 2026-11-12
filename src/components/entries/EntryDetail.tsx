@@ -52,7 +52,6 @@ export function EntryDetail({ entry, onBack }: EntryDetailProps) {
                                         type="button"
                                         size="sm"
                                         ff="monospace"
-                                        c="blue"
                                         underline="always"
                                         onClick={visit}
                                         style={{ textAlign: "left", overflowWrap: "anywhere" }}
