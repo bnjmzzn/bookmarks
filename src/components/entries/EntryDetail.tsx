@@ -10,7 +10,7 @@ import { FaviconTile } from "@/components/common/FaviconTile";
 import { TagBadge } from "@/components/common/TagBadge";
 import type { Entry } from "@/lib/client/types";
 import { getHostname, sortTags } from "@/lib/client/utils";
-import { UrlConfirmModal } from "./UrlConfirmModal";
+import { UrlConfirm } from "@/components/common/UrlConfirm";
 
 const TILE_SIZE = 128;
 const ICON_SIZE = 80;
@@ -45,18 +45,22 @@ export function EntryDetail({ entry, onBack }: EntryDetailProps) {
                         <FaviconTile hostname={hostname} size={TILE_SIZE} iconSize={ICON_SIZE} />
                         <Stack gap="xs" style={{ minWidth: 0 }}>
                             <Title order={2}>{entry.title}</Title>
-                            <Anchor
-                                component="button"
-                                type="button"
-                                size="sm"
-                                ff="monospace"
-                                c="blue"
-                                underline="always"
-                                onClick={open}
-                                style={{ textAlign: "left", overflowWrap: "anywhere" }}
-                            >
-                                {entry.url}
-                            </Anchor>
+                            <UrlConfirm url={entry.url}>
+                                {(visit) => (
+                                    <Anchor
+                                        component="button"
+                                        type="button"
+                                        size="sm"
+                                        ff="monospace"
+                                        c="blue"
+                                        underline="always"
+                                        onClick={visit}
+                                        style={{ textAlign: "left", overflowWrap: "anywhere" }}
+                                    >
+                                        {entry.url}
+                                    </Anchor>
+                                )}
+                            </UrlConfirm>
                             <Text size="sm" c="dimmed" ff="monospace" fw={700}>
                                 Added {createdLabel} | Edited {updatedLabel}
                             </Text>
@@ -68,19 +72,22 @@ export function EntryDetail({ entry, onBack }: EntryDetailProps) {
                         </Stack>
                     </Group>
                     <Group>
-                        <Button
-                            leftSection={<IconExternalLink size={18} stroke={2} />}
-                            onClick={open}
-                        >
-                            Visit link
-                        </Button>
+                        <UrlConfirm url={entry.url}>
+                        {(visit) => (
+                            <Button
+                                leftSection={<IconExternalLink size={18} stroke={2} />}
+                                onClick={visit}
+                            >
+                                Visit link
+                            </Button>
+                        )}
+                        </UrlConfirm>
                     </Group>
                     <Typography>
                         <Markdown remarkPlugins={[remarkGfm]}>{entry.description}</Markdown>
                     </Typography>
                 </Stack>
             </Card>
-            <UrlConfirmModal opened={isModalOpen} url={entry.url} onClose={close} />
         </Stack>
     );
 }

@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { NavLink } from "@mantine/core";
 import { IconBrandGithub, IconHome, IconInfoCircle } from "@tabler/icons-react";
+import { UrlConfirm } from "@/components/common/UrlConfirm";
 
 export function SidebarLinks() {
     return (
@@ -21,14 +22,15 @@ export function SidebarLinks() {
                 label="About"
                 leftSection={<IconInfoCircle size={18} stroke={1.75} />}
             />
-            <NavLink
-                component="a"
-                href="https://github.com/bnjmzzn/bookmarks"
-                target="_blank"
-                rel="noopener noreferrer"
-                label="GitHub Repository"
-                leftSection={<IconBrandGithub size={18} stroke={1.75} />}
-            />
+            <UrlConfirm url={"https://google.com"}>
+                {(visit) => (
+                    <NavLink
+                        label="GitHub Repository"
+                        leftSection={<IconBrandGithub size={18} stroke={1.75} />}
+                        onClick={visit}
+                    />
+                )}
+            </UrlConfirm>
         </>
     );
 }
