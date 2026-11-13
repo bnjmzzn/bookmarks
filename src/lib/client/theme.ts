@@ -15,7 +15,7 @@ const dark: MantineColorsTuple = [
 ];
 
 export const theme = createTheme({
-    primaryColor: "blue", // TODO: ui
+    primaryColor: "violet",
     colors: {
         dark,
     },
