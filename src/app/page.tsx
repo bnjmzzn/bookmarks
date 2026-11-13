@@ -12,7 +12,7 @@ import { filterEntries } from "@/lib/client/filterEntries";
 import { useEntryFilters } from "@/lib/client/hooks/useEntryFilters";
 
 export default function Home() {
-    const { entries, isLoading, hasError } = useEntriesContext();
+    const { entries, isLoading, hasError, refetch } = useEntriesContext();
     const { filters, entryId, openEntry, closeEntry } = useEntryFilters();
     const visibleEntries = filterEntries(entries, filters);
     const selectedEntry = entries.find((entry) => {
@@ -40,6 +40,7 @@ export default function Home() {
                 isLoading={isLoading}
                 hasError={hasError}
                 onOpen={openEntry}
+                onRetry={refetch}
             />
         </Stack>
     );

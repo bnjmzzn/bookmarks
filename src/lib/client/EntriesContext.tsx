@@ -10,6 +10,7 @@ type EntriesState = {
     entries: Entry[];
     isLoading: boolean;
     hasError: boolean;
+    refetch: () => void;
 };
 
 type EntriesProviderProps = {
