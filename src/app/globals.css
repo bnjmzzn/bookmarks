@@ -1,0 +1,9 @@
+/* Hide scrollbars globally while preserving scroll functionality */
+*:not([class*="mantine-"]) {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer and Edge */
+}
+
+*:not([class*="mantine-"])::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
+}

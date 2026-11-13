@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
+import "./globals.css";
 import type { Metadata } from "next";
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
