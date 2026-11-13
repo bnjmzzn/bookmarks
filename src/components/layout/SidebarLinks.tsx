@@ -16,13 +16,12 @@ export function SidebarLinks() {
                 leftSection={<IconHome size={18} stroke={1.75} />}
             />
             <NavLink
-                // TODO: create the about page
                 component={Link}
                 href="/about"
                 label="About"
                 leftSection={<IconInfoCircle size={18} stroke={1.75} />}
             />
-            <UrlConfirm url={"https://google.com"}>
+            <UrlConfirm url={"https://github.com/bnjmzzn/bookmarks"}>
                 {(visit) => (
                     <NavLink
                         label="GitHub Repository"
