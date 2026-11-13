@@ -10,7 +10,7 @@ type AboutSectionProps = {
 
 export function AboutSection({ repoUrl }: AboutSectionProps) {
     return (
-        <Stack gap="lg">
+        <Stack gap="xl">
             <Title order={2}>About</Title>
 
             <Stack gap="xs">

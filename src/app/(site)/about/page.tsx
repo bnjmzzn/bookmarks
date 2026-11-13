@@ -7,7 +7,7 @@ const REPO_URL = "https://github.com/bnjmzzn/bookmarks";
 
 export default function AboutPage() {
     return (
-        <Container size="sm" py="xl">
+        <Container size="sm" py="xl" ta="justify">
             <Stack gap="xl">
                 <AboutSection repoUrl={REPO_URL} />
                 <Divider />

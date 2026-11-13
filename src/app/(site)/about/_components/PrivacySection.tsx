@@ -12,7 +12,7 @@ type PrivacySectionProps = {
 
 export function PrivacySection({ repoUrl }: PrivacySectionProps) {
     return (
-        <Stack gap="lg">
+        <Stack gap="xl">
             <Title order={2}>Privacy</Title>
 
             <Text c="dimmed">
