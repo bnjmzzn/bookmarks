@@ -3,12 +3,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
-import { Button, Group, MultiSelect, Select, TextInput } from "@mantine/core";
+import { Button, Group, MultiSelect, Pill, Select, TextInput } from "@mantine/core";
 import { useDebouncedCallback } from "@mantine/hooks";
 import { useEntriesContext } from "@/lib/client/EntriesContext";
 import { getTagCounts, isSortOption } from "@/lib/client/filterEntries";
 import { useEntryFilters } from "@/lib/client/hooks/useEntryFilters";
 import { IconArrowsSort, IconFilterOff, IconSearch, IconTags } from "@tabler/icons-react";
+import { sortTags } from "@/lib/client/utils";
 
 const SEARCH_MAX_LENGTH = 100;
 const sortData = [
@@ -25,9 +26,11 @@ export function EntryToolbar() {
     const lastSentQuery = useRef(filters.query);
 
     const tagCounts = getTagCounts(entries);
-    const tagOptions = tagCounts.map((item) => {
-        return item.tag;
-    });
+    const tagOptions = sortTags(
+        tagCounts.map((item) => {
+            return item.tag;
+        })
+    );
 
     const hasQuery = filters.query !== "";
     const hasTags = filters.tags.length > 0;
@@ -87,19 +90,34 @@ export function EntryToolbar() {
                 hidePickedOptions
                 radius="md"
                 size="md"
-                style={{ flex: "2 1 0", minWidth: 220 }}
+                style={{
+                    flex: "2 1 0",
+                    minWidth: 220
+                }}
                 styles={{
                     input: {
                         height: 42,
                         minHeight: 42,
-                        overflow: "hidden",
+                        overflow: "hidden"
                     },
                     pillsList: {
                         flexWrap: "nowrap",
                         overflowX: "auto",
-                        scrollbarWidth: "none",
+                        scrollbarWidth: "none"
                     },
                 }}
+                renderPill={({ option, onRemove }) => (
+                    <Pill
+                        withRemoveButton
+                        onRemove={onRemove}
+                        radius="sm"
+                        style={{
+                            fontWeight: 500,
+                        }}
+                        >
+                        {option.label}
+                    </Pill>
+                )}
             />
             <Select
                 aria-label="Sort"
