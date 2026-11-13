@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { api } from "@/lib/client/api";
 import type { Entry } from "@/lib/client/types";
+import { ClientError } from "@/lib/client/errors";
 
 export function useEntries() {
     const [entries, setEntries] = useState<Entry[]>([]);
@@ -20,11 +21,18 @@ export function useEntries() {
                 return;
             }
 
+            let detail = "Unknown error";
+
+            if (error instanceof ClientError) {
+                detail = error.message;
+            }
+
             setHasError(true);
             setIsLoading(false);
             notifications.show({
                 color: "red",
-                message: "Failed to load",
+                title: "Failed to load",
+                message: detail,
             });
         }
     }, []);
