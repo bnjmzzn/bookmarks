@@ -25,6 +25,7 @@ export function EntryDetail({ entry, onBack }: EntryDetailProps) {
     const hostname = getHostname(entry.url);
     const createdLabel = new Date(entry.createdAt).toLocaleDateString();
     const updatedLabel = new Date(entry.editedAt).toLocaleDateString();
+    const description = entry.description.replace(/\n/g, "  \n");
 
     return (
         <Stack gap="md">
@@ -83,7 +84,7 @@ export function EntryDetail({ entry, onBack }: EntryDetailProps) {
                         </UrlConfirm>
                     </Group>
                     <Typography>
-                        <Markdown remarkPlugins={[remarkGfm]}>{entry.description}</Markdown>
+                        <Markdown remarkPlugins={[remarkGfm]}>{description}</Markdown>
                     </Typography>
                 </Stack>
             </Card>
