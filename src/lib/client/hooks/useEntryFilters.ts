@@ -60,18 +60,21 @@ export function useEntryFilters() {
     };
     const entryId = searchParams.get("entry");
     const hasUnknownTags = validTags.length !== urlTags.length;
+    
+    const hasInvalidSort = sortParam !== null && !isSortOption(sortParam);
+    const needsCleanup = hasUnknownTags || hasInvalidSort;
 
     useEffect(() => {
         if (isLoading || hasError) {
             return;
         }
-
-        if (!hasUnknownTags) {
+    
+        if (!needsCleanup) {
             return;
         }
-
+    
         router.replace(buildUrl({ ...filters, entryId }));
-    }, [isLoading, hasError, hasUnknownTags]);
+    }, [isLoading, hasError, needsCleanup]);
 
     function setQuery(query: string) {
         router.replace(buildUrl({ ...filters, query, entryId: null }));
