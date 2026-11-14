@@ -97,11 +97,11 @@ export function useEntryFilters() {
     }
 
     function openEntry(id: string) {
-        router.push(buildUrl({ ...filters, entryId: id }));
+        router.push(buildUrl({ ...filters, entryId: id }), { scroll: false });
     }
-
+    
     function closeEntry() {
-        router.push(buildUrl({ ...filters, entryId: null }));
+        router.push(buildUrl({ ...filters, entryId: null }), { scroll: false });
     }
 
     return {

@@ -1,8 +1,7 @@
 // src/app/page.tsx
-// DEBUG
 "use client";
 
-import { useEffect } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { Stack } from "@mantine/core";
 import { EntryDetail } from "@/components/entries/EntryDetail";
 import { EntryGrid } from "@/components/entries/EntryGrid";
@@ -20,12 +19,29 @@ export default function Home() {
     });
     const selectedId = selectedEntry?.id;
 
-    useEffect(() => {
-        if (selectedId === undefined) {
+    const savedScrollY = useRef(0);
+    const wasSelected = useRef(false);
+
+    const handleOpen = (id: string) => {
+        savedScrollY.current = window.scrollY;
+        openEntry(id);
+    };
+
+    useLayoutEffect(() => {
+        const isSelected = selectedId !== undefined;
+        const wasPreviouslySelected = wasSelected.current;
+        wasSelected.current = isSelected;
+
+        if (isSelected) {
+            window.scrollTo({ top: 0 });
             return;
         }
 
-        window.scrollTo({ top: 0 });
+        if (!wasPreviouslySelected) {
+            return;
+        }
+
+        window.scrollTo({ top: savedScrollY.current });
     }, [selectedId]);
 
     if (selectedEntry) {
@@ -39,7 +55,7 @@ export default function Home() {
                 entries={visibleEntries}
                 isLoading={isLoading}
                 hasError={hasError}
-                onOpen={openEntry}
+                onOpen={handleOpen}
                 onRetry={refetch}
             />
         </Stack>
