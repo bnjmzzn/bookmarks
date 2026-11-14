@@ -7,7 +7,11 @@ import { useEntriesContext } from "@/lib/client/EntriesContext";
 import { getTagCounts } from "@/lib/client/filterEntries";
 import { useEntryFilters } from "@/lib/client/hooks/useEntryFilters";
 
-export function SidebarTags() {
+interface SidebarTagsProps {
+    onNavigate: () => void;
+}
+
+export function SidebarTags({ onNavigate }: SidebarTagsProps) {
     const { entries, isLoading, hasError } = useEntriesContext();
     const { selectTag } = useEntryFilters();
     const tagCounts = getTagCounts(entries);
@@ -56,6 +60,7 @@ export function SidebarTags() {
                         }
                         onClick={() => {
                             selectTag(item.tag);
+                            onNavigate();
                         }}
                     />
                 );

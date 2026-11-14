@@ -14,7 +14,7 @@ type AppLayoutProps = {
 };
 
 export function AppLayout({ children }: AppLayoutProps) {
-    const [opened, { toggle }] = useDisclosure();
+    const [opened, { toggle, close }] = useDisclosure();
 
     return (
         <EntriesProvider>
@@ -34,7 +34,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 </AppShell.Header>
                 <AppShell.Navbar p="md">
                     <Suspense fallback={null}>
-                        <Sidebar />
+                        <Sidebar onNavigate={close} />
                     </Suspense>
                 </AppShell.Navbar>
                 <AppShell.Main>
