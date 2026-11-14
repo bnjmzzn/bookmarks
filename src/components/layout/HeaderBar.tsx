@@ -53,16 +53,28 @@ export function HeaderBar({ opened, onToggle }: HeaderBarProps) {
 
     return (
         <Group h="100%" px="md" justify="space-between" wrap="nowrap">
-            <Group wrap="nowrap" gap="md">
+            <Group wrap="nowrap" gap="md" miw={0} style={{ flex: 1 }}>
                 <Burger opened={opened} onClick={onToggle} hiddenFrom="sm" size="md" />
                 <Breadcrumbs
                     separator={<IconChevronRight size={16} stroke={1.5} />}
                     separatorMargin="xs"
+                    miw={0}
+                    styles={{
+                        root: { flexWrap: "nowrap", minWidth: 0 },
+                        separator: { flexShrink: 0 },
+                    }}
                 >
                     {crumbs.map((crumb) => {
                         if (crumb.href === null) {
                             return (
-                                <Text key={crumb.label} size="lg" fw={600} lh={1.6} lineClamp={1}>
+                                <Text
+                                    key={crumb.label}
+                                    size="lg"
+                                    fw={600}
+                                    lh={1.6}
+                                    truncate="end"
+                                    miw={0}
+                                >
                                     {crumb.label}
                                 </Text>
                             );
@@ -78,6 +90,7 @@ export function HeaderBar({ opened, onToggle }: HeaderBarProps) {
                                 lh={1.6}
                                 c="dimmed"
                                 underline="never"
+                                style={{ flexShrink: 0 }}
                             >
                                 {crumb.label}
                             </Anchor>
