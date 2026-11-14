@@ -1,9 +1,11 @@
 // src/lib/client/hooks/useEntryFilters.ts
 "use client";
 
+import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { isSortOption } from "@/lib/client/filterEntries";
+import { getTagCounts, isSortOption } from "@/lib/client/filterEntries";
 import type { EntryFilters, SortOption } from "@/lib/client/filterEntries";
+import { useEntriesContext } from "@/lib/client/EntriesContext";
 
 type UrlState = EntryFilters & {
     entryId: string | null;
@@ -40,14 +42,36 @@ function buildUrl(state: UrlState) {
 export function useEntryFilters() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { entries, isLoading, hasError } = useEntriesContext();
+
+    const knownTags = getTagCounts(entries).map((item) => {
+        return item.tag;
+    });
+    const urlTags = searchParams.getAll("tags");
+    const validTags = urlTags.filter((tag) => {
+        return knownTags.includes(tag);
+    });
 
     const sortParam = searchParams.get("sort");
     const filters: EntryFilters = {
         query: searchParams.get("q") ?? "",
-        tags: searchParams.getAll("tags"),
+        tags: validTags,
         sort: isSortOption(sortParam) ? sortParam : "newest",
     };
     const entryId = searchParams.get("entry");
+    const hasUnknownTags = validTags.length !== urlTags.length;
+
+    useEffect(() => {
+        if (isLoading || hasError) {
+            return;
+        }
+
+        if (!hasUnknownTags) {
+            return;
+        }
+
+        router.replace(buildUrl({ ...filters, entryId }));
+    }, [isLoading, hasError, hasUnknownTags]);
 
     function setQuery(query: string) {
         router.replace(buildUrl({ ...filters, query, entryId: null }));
